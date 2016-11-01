@@ -19,7 +19,7 @@ BeautifulSoup 用了 lxml 来解析网页，你可能需要安装 lxml 库：
 使用方法
 ---
 
-> python Avid.py
+> python avid.py
 
 That's all.
 
