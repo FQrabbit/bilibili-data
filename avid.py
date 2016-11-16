@@ -139,5 +139,10 @@ if __name__ == "__main__":
     pool = Pool(50)
     #GetInfo(326)
     for avid in range(minid - 5000, GetMaxID()):
+        '''curs.execute(''SELECT avid FROM avlist where avid = {avid}''.format(avid=avid))
+        rows = curs.fetchall()
+        if rows != []:
+            pass
+        else:'''
         pool.add(gevent.spawn(GetInfo, avid))
     pool.join()
