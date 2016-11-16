@@ -52,7 +52,7 @@ def WriteData(avid=None, avdata=None):
         avid = int(avid)
         avdata = avdata
     try:
-        database = sqlite3.connect('AV-database.db')
+        database = sqlite3.connect('database.db')
         curs = database.cursor()
         curs.execute('''CREATE TABLE IF NOT EXISTS avlist 
             (Avid INT PRIMARY KEY, Title CHAR(100), Mid INT, Nick CHAR(20), 
@@ -115,18 +115,18 @@ def GetInfo(avid=None):
         region = page.select('a[property=v:title]')[-1].string
         cover = page.select('img[id=share_pic]')[0].attrs['src']
         raw = (avid, title, mid, nick, uptime, region, cover, 200)
-        printf = "AV{avid:<10} {mid:<10} {uptime:<20} {region:<10} {nick:>20}".format(avid=avid, title=title, mid=mid, nick=nick, uptime=uptime, region=region)
+        printf = u"AV{avid:<10} {uptime:<20}".format(avid=avid, uptime=uptime)
         print(printf)
         WriteData(avid, raw)
     except IndexError:
         #TBD with bangumi
-        print('\n')
+        print('{avid} bangumi'.format(avid=avid))
         return 404
 
 
 if __name__ == "__main__":
     try:
-        database = sqlite3.connect('AV-database.db')
+        database = sqlite3.connect('database.db')
         curs = database.cursor()
         curs.execute('''CREATE TABLE IF NOT EXISTS avlist 
             (Avid INT PRIMARY KEY, Title CHAR(100), Mid INT, Nick CHAR(20), 
@@ -136,8 +136,8 @@ if __name__ == "__main__":
         minid, = rows[0] if rows[0] != (None,) else (1,)
     except:
         minid = 1
-    pool = Pool(5)
+    pool = Pool(50)
     #GetInfo(326)
-    for avid in range(minid, GetMaxID()):
+    for avid in range(minid - 5000, GetMaxID()):
         pool.add(gevent.spawn(GetInfo, avid))
     pool.join()
