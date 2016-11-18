@@ -8,6 +8,7 @@ import time
 from time import strftime
 
 import sqlite3
+import pymongo
 from pymongo import MongoClient
 
 import gevent
@@ -17,9 +18,6 @@ monkey.patch_socket()
 
 
 def MongoData(oid=None, data=None):
-    client = MongoClient('mongodb://127.0.0.1:27017/')
-    db = client['bilibili-data']
-    collection = db['comments']
     try:
         oid = int(oid)
         if not data:
@@ -37,12 +35,12 @@ def MongoData(oid=None, data=None):
             "Device" : device,
             "Rpid": rpid}
     try:
-        if collection.find_one({"rpid": rpid}) is None:
+        if collection.find_one({"Rpid": rpid}) is None:
             collection.insert(post)
         else:
             pass
-    except:
-        return 404
+    except pymongo.errors.ServerSelectionTimeoutError:
+        print('mongo error')
 
 
 def WriteData(oid=None, data=None):
@@ -64,7 +62,7 @@ def WriteData(oid=None, data=None):
         curs.close()
         database.close()
     except:
-        return 404
+        print('sql error')
 
 
 def CountPage(oid=None):
@@ -73,11 +71,11 @@ def CountPage(oid=None):
     except TypeError:
         return None
     url = 'http://api.bilibili.com/x/v2/reply?jsonp=jsonp&type=1&sort=0&oid={oid}&pn=1&nohot=1'.format(oid=oid)
-    temp = requests.get(url=url, timeout=300)
+    temp = requests.get(url=url)
     try:
         response = json.loads(temp.text)
     except json.JSONDecodeError:
-        return None
+        print('jsondecode')
     if response['code'] == -404: # 未知
         return None
     elif response['code'] == 12002: # 锁定稿件/审核中稿件
@@ -87,6 +85,7 @@ def CountPage(oid=None):
          size = response['data']['page']['size']
          # 评论页数计算
          pages = count // size if count % size == 0 else count // size + 1
+         print(pages)
     else:
         return None
     return pages
@@ -97,14 +96,15 @@ def CommentGet(oid=None, pages=None):
         oid = int(oid)
         pages = int(pages)
     except TypeError:
-        return 404
+        print('typeerror')
     for page in range(1, pages+1):
         url = 'http://api.bilibili.com/x/v2/reply?jsonp=jsonp&type=1&sort=0&oid={oid}&pn={page}&nohot=1'.format(oid=oid, page=page)
         temp = requests.get(url=url, timeout=300)
+        print(page)
         try:
             response = json.loads(temp.text)
         except json.JSONDecodeError:
-            return 404
+            print('jsonerror')
         replies = response['data']['replies']
         for i in range(len(replies)):
             rpid = replies[i]['rpid']
@@ -116,7 +116,7 @@ def CommentGet(oid=None, pages=None):
             msg = replies[i]['content']['message']
             device = replies[i]['content']['device']
             data = (rfloor, floor, mid, ctime, rtime, msg, device, rpid)
-            WriteData(oid, data)
+            MongoData(oid, data)
             # 楼中楼
             if replies[i].get('replies') != []:
                 inreplies = replies[i]['replies']
@@ -130,7 +130,11 @@ def CommentGet(oid=None, pages=None):
                     inmsg = inreplies[j]['content']['message']
                     indevice = inreplies[j]['content']['device']
                     data = (inrfloor, infloor, inmid, inctime, inrtime, inmsg, indevice, inrpid)
-                    WriteData(oid, data)
+                    MongoData(oid, data)
 
 
-CommentGet(6175933,CountPage(6175933))
+if __name__ == '__main__':
+    client = MongoClient('mongodb://127.0.0.1:27017/', connect=False)
+    db = client['bilibili-data']
+    collection = db['comments']
+    CommentGet(6175933,CountPage(6175933))
