@@ -13,9 +13,6 @@ monkey.patch_socket()
 
 
 def MongoData(avid=None, avdata=None):
-    client = MongoClient('mongodb://127.0.0.1:27017/')
-    db = client['bilibili']
-    collection = db['avlists']
     if not avid:
         return 404
     elif not avdata:
@@ -125,6 +122,11 @@ def GetInfo(avid=None):
 
 
 if __name__ == "__main__":
+    '''
+    client = MongoClient('mongodb://127.0.0.1:27017/')
+    db = client['bilibili']
+    collection = db['avlists']
+    '''
     try:
         database = sqlite3.connect('database.db')
         curs = database.cursor()
