@@ -117,7 +117,7 @@ def CommentGet(oid=None, pages=None):
             ctime = replies[i]['ctime']
             rtime = strftime("%Y-%m-%d %H:%M", time.localtime(ctime))
             msg = replies[i]['content']['message']
-            device = replies[i]['content']['device']
+            device = replies[i]['content']['plat']
             data = (rfloor, floor, mid, ctime, rtime, msg, device, rpid)
             MongoData(oid, data)
             # 楼中楼
@@ -131,7 +131,7 @@ def CommentGet(oid=None, pages=None):
                     inctime = inreplies[j]['ctime']
                     inrtime = strftime("%Y-%m-%d %H:%M", time.localtime(ctime))
                     inmsg = inreplies[j]['content']['message']
-                    indevice = inreplies[j]['content']['device']
+                    indevice = inreplies[j]['content']['plat']
                     data = (inrfloor, infloor, inmid, inctime, inrtime, inmsg, indevice, inrpid)
                     MongoData(oid, data)
 
@@ -149,4 +149,4 @@ if __name__ == '__main__':
         if row != (None,):
             avid, = row
             CommentGet(avid,CountPage(avid))
-    #CommentGet(6175933,CountPage(6175933))
+    #CommentGet(6976624,CountPage(6976624))
