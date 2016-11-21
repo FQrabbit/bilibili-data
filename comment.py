@@ -99,7 +99,10 @@ def CommentGet(oid=None, pages=None):
         print('typeerror')
     for page in range(1, pages+1):
         url = 'http://api.bilibili.com/x/v2/reply?jsonp=jsonp&type=1&sort=0&oid={oid}&pn={page}&nohot=1'.format(oid=oid, page=page)
-        temp = requests.get(url=url, timeout=300)
+        try:
+            temp = requests.get(url=url, timeout=300)
+        except requests.exceptions.ConnectionError:
+            pass
         print(page)
         try:
             response = json.loads(temp.text)
@@ -137,4 +140,13 @@ if __name__ == '__main__':
     client = MongoClient('mongodb://127.0.0.1:27017/', connect=False)
     db = client['bilibili-data']
     collection = db['comments']
-    CommentGet(6175933,CountPage(6175933))
+    database = sqlite3.connect('database.db')
+    curs = database.cursor()
+    curs.execute('''SELECT DISTINCT Avid FROM avlist WHERE Status = 200 ORDER BY Avid''')
+    rows = curs.fetchall()
+    for row in rows:
+        print(row)
+        if row != (None,):
+            avid, = row
+            CommentGet(avid,CountPage(avid))
+    #CommentGet(6175933,CountPage(6175933))
