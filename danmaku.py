@@ -3,15 +3,9 @@
 # -*- coding: utf-8 -*-
 
 from multiprocessing.dummy import Pool as ThreadPool
+from bilisupport import DANMAKULIST, API_PAGELIST, CID_DANMAKU
 import requests
 from bs4 import BeautifulSoup
-from pymongo import MongoClient
-
-DATABASE = MongoClient('mongodb://127.0.0.1:27017/', connect=False)
-DANMAKULIST = DATABASE['bilibili-data']['DanmakuData']
-AVIDLIST = DATABASE['bilibili-data']['DanmakuData']
-API = 'http://www.bilibili.com/widget/getPageList?'
-CIDL = 'http://comment.bilibili.com/{0}.xml'
 
 
 def getdanmaku(aid, cid):
@@ -22,7 +16,7 @@ def getdanmaku(aid, cid):
         aid = int(aid)
         cid = int(cid)
     print(aid, cid)
-    link = CIDL.format(cid)
+    link = CID_DANMAKU.format(cid)
     response = requests.get(url=link, timeout=300)
     content = BeautifulSoup(response.text, "xml")
     # <d p="190.56399536133,5,25,15138834,1465868252,0,61dba469,1957402211">弹幕字幕</d>
@@ -45,9 +39,9 @@ def getdanmaku(aid, cid):
 
 if __name__ == '__main__':
     MULTIPOOL = ThreadPool(8)
-    for avid in range(318527, 7454282):
+    for avid in open('videoaid.csv', 'r'): #1096797
         params = {'aid': avid}
-        resp = requests.get(url=API, params=params, timeout=300)
+        resp = requests.get(url=API_PAGELIST, params=params, timeout=300)
         if resp.status_code == 200:
             pages = resp.json()
             #result = [getdanmaku(avid, page['cid']) for page in pages]
