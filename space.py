@@ -2,31 +2,28 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import multiprocessing
-
+from multiprocessing.dummy import Pool as ThreadPool
+from bilisupport import ACCOUNTLIST, ERRORLIST, API_SPACE
 import requests
-from pymongo import MongoClient
 
-DATABASE = MongoClient('mongodb://127.0.0.1:27017/', connect=False)
-DATABASE = DATABASE['bilibili-data']['SpaceInfo']
-API = 'http://space.bilibili.com/ajax/member/GetInfo'
 
-def writedata(headers, form):
+def getspaceinfo(headers, form):
     '''json解码完写数据'''
-    jsondata = requests.post(url=API, headers=headers, data=form)
-    data = jsondata.json()
-    DATABASE.insert(data)
-    DATABASE.close()
+    try:
+        jsondata = requests.post(url=API_SPACE, headers=headers, data=form)
+    except TimeoutError:
+        ERRORLIST.insert(form)
+    data = jsondata.json().get('data')
+    ACCOUNTLIST.update(form, {'$set': data}, upsert=True)
 
 
 if __name__ == '__main__':
-    multiprocessing.freeze_support()
-    POOL = multiprocessing.Pool(processes=2)
+    MULTIPOOL = ThreadPool(2)
     for mid in range(1, 60631040):
         spaceurl = 'http://space.bilibili.com/{mid}/'.format(mid=mid)
         postheaders = {'Referer': spaceurl}
         postdata = {'mid':"{0}".format(mid)}
         print(mid)
-        POOL.apply_async(writedata, (postheaders, postdata, ))
-    POOL.close()
-    POOL.join()
+        MULTIPOOL.apply_async(getspaceinfo, (postheaders, postdata, ))
+    MULTIPOOL.close()
+    MULTIPOOL.join()
