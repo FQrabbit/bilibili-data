@@ -38,7 +38,7 @@ def getdanmaku(aid, cid):
 
 
 if __name__ == '__main__':
-    MULTIPOOL = ThreadPool(8)
+    MULTIPOOL = ThreadPool(16)
     for avid in open('videoaid.csv', 'r'): #1096797
         params = {'aid': avid}
         try:
