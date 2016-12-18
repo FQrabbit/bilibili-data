@@ -33,14 +33,14 @@ def getcomment(oid):
         while temp['data'].get('replies'):
             replylst = temp['data'].get('replies')
             REPLYLIST.insert_many(replylst)
+            print(oid, params['pn'])
             params['pn'] = temp['data']['page']['num'] + 1
             temp = requests.get(url=API_REPLY, params=params).json()
 
 
-
 if __name__ == '__main__':
     MULTIPOOL = ThreadPool(16)
-    for avid in open('videoaid.csv', 'r'):
-        MULTIPOOL.apply_async(getcomment, avid)
+    for avid in open('videoaid2.csv', 'r'):
+        MULTIPOOL.apply_async(getcomment, (avid,))
     MULTIPOOL.close()
     MULTIPOOL.join()
