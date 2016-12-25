@@ -40,7 +40,7 @@ def getcomment(oid):
 
 if __name__ == '__main__':
     MULTIPOOL = ThreadPool(16)
-    for avid in open('videoaid2.csv', 'r'):
+    for avid in open('videoaid.csv', 'r'):
         MULTIPOOL.apply_async(getcomment, (avid,))
     MULTIPOOL.close()
     MULTIPOOL.join()

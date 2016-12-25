@@ -28,7 +28,7 @@ def getspaceinfo(headers, form):
 
 
 if __name__ == '__main__':
-    for mid in range(12977, 60631040):
+    for mid in range(1, 60631040):
         spaceurl = 'http://space.bilibili.com/{mid}/'.format(mid=mid)
         HEADERS['Referer'] = spaceurl
         postheaders = {'Referer': spaceurl}
