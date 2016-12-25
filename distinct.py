@@ -2,10 +2,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from pymongo import MongoClient
-
-DATABASE = MongoClient('mongodb://127.0.0.1:27017/', connect=False)
-AVIDLIST = DATABASE['bilibili-data']['SubmitVideos']
+from bilisupport import AVIDLIST
 
 for aid in open('videoaid.csv', 'r'):
     aid = int(aid.strip('\n').strip('\r'))
