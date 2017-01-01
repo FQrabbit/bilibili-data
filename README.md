@@ -18,7 +18,7 @@ bilibili-data
 ## 脚本分类
 
 | 文件 | 用途 |
- - | - |
+| - | - |
 | aid2uid.py | AV号与UP主对应关系 |
 | alluid.py | 全站UP主投稿遍历 |
 | avdesc.py | 全站AV号基础数据补足 |
@@ -54,7 +54,7 @@ bilibili-data
 ```
 
 | aid | title | typeid | mid | author | created | copyright | length |
- - | - | - | - | - | - | - | - |
+| - | - | - | - | - | - | - | - |
 | INT | CHAR | INT | INT | CHAR | CHAR | CHAR | INT |
 | - | - | 24:'MAD·AMV' | - | - | - | Copy | - |
 | - | - | 25:'MMD·3D' | - | - | - | Original | - |
@@ -170,7 +170,7 @@ bilibili-data
 ```
 
 | oid | floor | parent | mid | ctime | content.message | plat | rpid |
- - | - | - | - | - | - | - | - |
+| - | - | - | - | - | - | - | - |
 | INT | INT | INT | INT | INT | CHAR | CHAR | INT |
 | - | - | 0: 主楼 | - | - | - | 1: 网页 | - |
 | - | - | 9: 楼中楼 | - | - | - | 2: 安卓 | - |
@@ -199,7 +199,7 @@ bilibili-data
 ```
 
 | aid | cid | time | mode | font | color | date | pool | hash | id | text |
- - | - | - | - | - | - | - | - | - | - | - |
+| - | - | - | - | - | - | - | - | - | - | - |
 | INT | INT | CHAR | INT | INT | CHAR | CHAR | INT | CHAR | INT | CHAR |
 | - | - | - | 1~3: 普通弹幕 | - | - | #FFFFFF | - | - | - | - |
 | - | - | - | 4: 底部弹幕 | - | - | - | - | - | - | - |
@@ -246,7 +246,7 @@ bilibili-data
 ```
 
 | mid | name | sex | regtime | fans | attention | description |
- - | - | - | - | - | - | - |
+| - | - | - | - | - | - | - |
 | INT | CHAR | CHAR | INT | INT | INT | CHAR |
 | - | - | - | - | - | - | - |
 
@@ -266,7 +266,7 @@ bilibili-data
 ```
 
 | tag_id | name | subscribe_count | visit_count | cover | subscribed |
- - | - | - | - | - | - |
+| - | - | - | - | - | - |
 | INT | CHAR | INT | INT |CHAR | INT |
 | - | - | - | - | - | 0 |
 
