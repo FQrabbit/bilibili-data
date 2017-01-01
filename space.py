@@ -38,4 +38,3 @@ if __name__ == '__main__':
         else:
             print(u"屏蔽判定，暂停1分钟")
             time.sleep(61)
-            mid -= 1

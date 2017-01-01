@@ -2,10 +2,22 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from bilisupport import AVIDLIST
+from multiprocessing.dummy import Pool as ThreadPool
+from pymongo import MongoClient
 
-for aid in open('videoaid.csv', 'r'):
-    aid = int(aid.strip('\n').strip('\r'))
-    while AVIDLIST.find({"aid": aid}).count() > 1:
-        print('found', aid)
-        AVIDLIST.delete_one({"aid": aid})
+DATABASE = MongoClient('mongodb://127.0.0.1:27017/', connect=False)
+TAGLIST = DATABASE['bilibili-data']['TagData']
+
+
+def check(tid):
+    '''去重'''
+    if TAGLIST.find({"tag_id": tid}).count() > 1:
+        TAGLIST.delete_one({"tag_id": tid})
+
+
+if __name__ == '__main__':
+    MULTIPOOL = ThreadPool(16)
+    for i in range(1, 1773900):
+        MULTIPOOL.apply_async(check, (i,))
+    MULTIPOOL.close()
+    MULTIPOOL.join()
