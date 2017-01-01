@@ -26,7 +26,7 @@ def taginfo(tid):
 
 if __name__ == '__main__':
     # taginfo(2053)
-    MULTIPOOL = ThreadPool(16)
+    MULTIPOOL = ThreadPool(4)
     for i in range(1, 1773900):
         MULTIPOOL.apply_async(taginfo, (i,))
     MULTIPOOL.close()

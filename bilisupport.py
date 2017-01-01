@@ -5,6 +5,7 @@
 from pymongo import MongoClient
 
 DATABASE = MongoClient('mongodb://127.0.0.1:27017/', connect=False)
+AID2MID = DATABASE['bilibili-data']['AID2MID']
 AVIDLIST = DATABASE['bilibili-data']['SubmitVideos']
 DANMAKULIST = DATABASE['bilibili-data']['DanmakuData']
 REPLYLIST = DATABASE['bilibili-data']['CommentData']

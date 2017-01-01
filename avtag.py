@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 
 from multiprocessing.dummy import Pool as ThreadPool
-from bilisupport import TAGLIST, ERRORLIST, API_TAG
+from bilisupport import AVTAGLIST, ERRORLIST, API_TAG
 import requests
 
 
@@ -22,7 +22,7 @@ def gettag(aid):
             'aid': aid,
             'tag': x.get('tag_id')
             } for x in info.get('data')]
-        TAGLIST.insert_many(tags)
+        AVTAGLIST.insert_many(tags)
         print(aid)
     else:
         ERRORLIST.insert_one(info)

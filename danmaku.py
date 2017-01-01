@@ -39,17 +39,12 @@ def getdanmaku(aid, cid):
 
 if __name__ == '__main__':
     MULTIPOOL = ThreadPool(16)
-    for avid in open('videoaid.csv', 'r'): #1096797
+    for avid in open('videoaid.csv', 'r'):
         params = {'aid': avid}
-        try:
-            resp = requests.get(url=API_PAGELIST, params=params, timeout=300)
-        except TimeoutError:
-            resp = requests.get(url=API_PAGELIST, params=params)
+        resp = requests.get(url=API_PAGELIST, params=params)
         if resp.status_code == 200:
             pages = resp.json()
-            #result = [getdanmaku(avid, page['cid']) for page in pages]
             for page in pages:
                 MULTIPOOL.apply_async(getdanmaku, (avid, page['cid']))
     MULTIPOOL.close()
     MULTIPOOL.join()
-    #getdanmaku(807478, 1172133)
